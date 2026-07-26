@@ -1,0 +1,6 @@
+{
+  "name": "slide-forge",
+  "description": "赛博终端风 HTML 动效 slides 生成:单文件零依赖离线放映,含设计 token/动效引擎模板/asciinema 终端实录内嵌配方",
+  "version": "0.1.0",
+  "skills": "./skills"
+}

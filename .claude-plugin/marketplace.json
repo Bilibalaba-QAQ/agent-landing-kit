@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "agent-landing-kit",
+  "owner": {
+    "name": "agent-landing-kit"
+  },
+  "metadata": {
+    "description": "给 AI 新员工的入职装备:资讯 / 邮件 / 内网访问 / 找轮子 / 做 slides 五件套",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "ai-briefing",
+      "source": "./ai-briefing",
+      "description": "AI 资讯双技能:aihot 即时查询 + ai-daily 纯文本日报(公开只读 API,零凭据)"
+    },
+    {
+      "name": "mail-reader",
+      "source": "./mail-reader",
+      "description": "邮件只读检索双路径:macOS+Foxmail 本地零凭据脚本 / 通用 IMAP 邮件 MCP 接入指南"
+    },
+    {
+      "name": "conf-access",
+      "source": "./conf-access",
+      "description": "内网站点 hosts 一键钉:标记块写入(备份/幂等/可还原),域名与 IP 本地配置、不入仓"
+    },
+    {
+      "name": "skill-scout",
+      "source": "./skill-scout",
+      "description": "先找轮子再造轮子:新需求先多路深搜 GitHub/awesome 清单/skill 市场找现成能力,评估后给安装命令,找不到才自建"
+    },
+    {
+      "name": "slide-forge",
+      "source": "./slide-forge",
+      "description": "赛博终端风 HTML 动效 slides 生成:单文件零依赖离线放映,含设计 token/动效引擎模板/asciinema 终端实录内嵌配方"
+    }
+  ]
+}

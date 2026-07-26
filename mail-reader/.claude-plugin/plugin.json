@@ -1,0 +1,6 @@
+{
+  "name": "mail-reader",
+  "description": "邮件只读检索双路径:macOS+Foxmail 本地零凭据脚本 / 通用 IMAP 邮件 MCP 接入指南",
+  "version": "0.1.0",
+  "skills": "./skills"
+}
