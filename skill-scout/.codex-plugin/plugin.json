@@ -1,0 +1,6 @@
+{
+  "name": "skill-scout",
+  "version": "0.1.0",
+  "description": "先找轮子再造轮子:新需求先多路深搜 GitHub/awesome 清单/skill 市场找现成能力,评估后给安装命令,找不到才自建",
+  "license": "MIT"
+}

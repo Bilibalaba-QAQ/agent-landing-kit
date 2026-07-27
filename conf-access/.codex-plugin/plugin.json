@@ -1,0 +1,6 @@
+{
+  "name": "conf-access",
+  "version": "0.1.0",
+  "description": "内网站点 hosts 一键钉:标记块写入(备份/幂等/可还原),域名与 IP 本地配置、不入仓",
+  "license": "MIT"
+}

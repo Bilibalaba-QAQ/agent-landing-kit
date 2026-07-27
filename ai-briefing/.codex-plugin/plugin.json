@@ -1,0 +1,6 @@
+{
+  "name": "ai-briefing",
+  "version": "0.1.0",
+  "description": "AI 资讯双技能:aihot 即时查询 + ai-daily 纯文本日报(公开只读 API,零凭据)",
+  "license": "MIT"
+}

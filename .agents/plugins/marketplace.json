@@ -1,0 +1,74 @@
+{
+  "name": "agent-landing-kit",
+  "interface": {
+    "displayName": "Agent Landing Kit"
+  },
+  "plugins": [
+    {
+      "name": "ai-briefing",
+      "source": {
+        "source": "local",
+        "path": "./ai-briefing"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "mail-reader",
+      "source": {
+        "source": "local",
+        "path": "./mail-reader"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "conf-access",
+      "source": {
+        "source": "local",
+        "path": "./conf-access"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "conf-writer",
+      "source": {
+        "source": "local",
+        "path": "./conf-writer"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "skill-scout",
+      "source": {
+        "source": "local",
+        "path": "./skill-scout"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "slide-forge",
+      "source": {
+        "source": "local",
+        "path": "./slide-forge"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

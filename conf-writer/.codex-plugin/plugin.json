@@ -1,0 +1,6 @@
+{
+  "name": "conf-writer",
+  "version": "0.1.0",
+  "description": "Confluence 内容投递:markdown→storage 转换后写进指定页面的指定位置(替换/追加/插到某标题下/新建),默认 dry-run,--apply 才落笔;双传输腿——浏览器已登录会话(零凭据)或个人 PAT",
+  "license": "MIT"
+}

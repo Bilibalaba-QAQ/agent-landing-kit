@@ -1,6 +1,35 @@
 # agent-landing-kit — 给 AI 新员工的入职装备
 
-一句话定位:**把一个刚上岗的 AI 助手(Claude Code / Codex 等)快速武装起来的六件套插件市场**——会看资讯、会查邮件、打得开内网站点、写得进内网文档、先找轮子再造轮子、还能做出漂亮的演示 slides。
+一句话定位:**把一个刚上岗的 AI 助手快速武装起来的六件套插件市场**——会看资讯、会查邮件、打得开内网站点、写得进内网文档、先找轮子再造轮子、还能做出漂亮的演示 slides。
+
+**Codex 与 Claude Code 都能装**(同一个仓库带两套插件清单,各认各的)。
+
+## 装法(推荐):把下面这段整段粘给你的 AI
+
+> 请把 GitHub 公开仓 `Bilibalaba-QAQ/agent-landing-kit` 添加为插件市场并安装其中的插件。
+> 你自己判断当前跑在哪个客户端,用对应的命令:
+> - **Codex**:`codex plugin marketplace add Bilibalaba-QAQ/agent-landing-kit`,再逐个 `codex plugin add <插件名>@agent-landing-kit`
+> - **Claude Code**:`claude plugin marketplace add Bilibalaba-QAQ/agent-landing-kit`,再逐个 `claude plugin install <插件名>@agent-landing-kit`
+>
+> 六个插件是:ai-briefing、mail-reader、conf-access、conf-writer、skill-scout、slide-forge。装完后请:
+> ①用 ai-briefing 出一份今天的 AI 日报,验证装好了;
+> ②告诉我 mail-reader 两条路径(macOS Foxmail 本地脚本 / IMAP 邮件 MCP)哪条适合我这台机器;
+> ③conf-access 先别执行,等我从管理员处拿到内网域名与 IP;
+> ④conf-writer 先只跑一次离线渲染自检(`render --text '# hi'`),等我给出目标页面地址再谈写入。
+
+## 装法(手动):自己敲命令
+
+```bash
+# Codex
+codex plugin marketplace add Bilibalaba-QAQ/agent-landing-kit
+codex plugin add conf-writer@agent-landing-kit      # 换成你要的插件名;六件可逐个装
+
+# Claude Code
+claude plugin marketplace add Bilibalaba-QAQ/agent-landing-kit
+claude plugin install conf-writer@agent-landing-kit
+```
+
+Claude Code 里也可以用 `/plugin` 交互式挑选。
 
 ## 六件一览
 
@@ -13,24 +42,12 @@
 | `skill-scout` | 新需求先深搜 GitHub/skill 市场找现成能力,找不到才自建 | 无 |
 | `slide-forge` | 赛博终端风 HTML 动效 slides:单文件零依赖离线放映,可内嵌 asciinema 终端实录 | 无 |
 
-## 安装方式一:终端两条命令
-
-```bash
-claude plugin marketplace add Bilibalaba-QAQ/agent-landing-kit
-claude plugin install ai-briefing@agent-landing-kit   # 换成你要的插件名;六件可逐个装
-```
-
-或在 Claude Code 会话里用 `/plugin` 交互式挑选。
-
-## 安装方式二:AI 版(直接粘给你的 Claude Code / Codex)
-
-> 请添加插件市场 `Bilibalaba-QAQ/agent-landing-kit`(GitHub 公开仓),然后把其中的六个插件 ai-briefing、mail-reader、conf-access、conf-writer、skill-scout、slide-forge 全部安装。装完后:①用 ai-briefing 给我出一份今天的 AI 日报验证;②告诉我 mail-reader 两条路径(macOS Foxmail 本地脚本 / IMAP 邮件 MCP)哪条适合当前机器;③conf-access 先不要执行,等我从管理员处拿到内网域名与 IP 再说;④conf-writer 先只跑 `render` 自检渲染,等我给出目标页面地址再谈写入。
-
 ## 注意事项
 
 - `mail-reader` 路径一零凭据只读;路径二需要你自己生成 IMAP 授权码,**自己填在本机,永不写进仓库或对话**。
 - `conf-access` 写 `/etc/hosts` 需要 sudo,请自己回车确认;域名与 IP 只保存在你本机 `~/.config/conf-access/config`。
 - `conf-writer` 默认 dry-run,不加 `--apply` 不会写入任何内容;走浏览器会话腿零凭据零配置,走 PAT 腿则 token 只存你本机 `~/.config/opc/conf-writer.env`(或 `~/.config/conf-writer/config`),**各人用各人的,不要互传**。
+  它的浏览器会话腿产出的是一段自包含 JS:有浏览器工具的客户端可直接执行,没有的话把这段 JS 粘进浏览器开发者工具 Console 里跑,效果一样。
 - `slide-forge` 附带的 asciinema-player 资产为 GPL-3.0,详见 `slide-forge/skills/slide-forge/assets/THIRD_PARTY.md`。
 
 ## License

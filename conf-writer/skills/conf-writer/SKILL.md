@@ -47,7 +47,7 @@ description: 把已经写好的 markdown 内容投递到指定 Confluence 页面
 |---|---|---|
 | 凭据 | **完全不需要**,借用户浏览器里已登录的会话 | 需要 Personal Access Token |
 | 配置 | **零配置** | 需配站点根与 token |
-| 前提 | 浏览器开着且已登录该 Confluence | 站点 7.9+ 且允许创建 PAT |
+| 前提 | 浏览器开着且已登录该 Confluence(有无浏览器工具都行,见下) | 站点 7.9+ 且允许创建 PAT |
 | 无人值守 | 不行(定时任务用不了) | 可以 |
 | 怎么跑 | `browser-script` 出 JS,交浏览器工具执行 | `write` 子命令直接跑 |
 
@@ -62,8 +62,15 @@ python3 <本skill目录>/scripts/conf_writer.py browser-script \
     --url "<把页面地址粘这里>" --file 内容.md --mode append > /tmp/cw.js
 ```
 
-把 `/tmp/cw.js` 的内容交给浏览器工具执行(如 Claude 的 `claude-in-chrome` 的
-`javascript_tool`;标签页须停在该 Confluence 站点上,同源才带得上会话)。
+把 `/tmp/cw.js` 的内容拿到浏览器里执行,三种方式任选(标签页须停在该 Confluence 站点上,
+同源才带得上会话):
+
+- 客户端自带浏览器工具的,直接执行(Claude Code 的 `claude-in-chrome` `javascript_tool`、
+  Codex 的 browser / chrome 插件都行);
+- **没有浏览器工具也不受影响**:让用户把这段 JS 粘进浏览器开发者工具 Console 回车,
+  效果完全一样(F12 或 ⌥⌘I 打开 Console);
+- 首次粘贴时 Chrome 可能要求先手动输入 `allow pasting` 才允许粘贴代码,照提示做即可。
+
 不加 `--apply` 生成的是 dry-run 脚本,只回报「会改成什么样」,不写入;
 确认后加 `--apply` 重新生成再执行。
 
