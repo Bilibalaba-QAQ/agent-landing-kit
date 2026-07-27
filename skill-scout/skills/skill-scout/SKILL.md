@@ -1,7 +1,5 @@
 ---
 name: skill-scout
-tier: public
-config: []
 description: 新需求出现时,先深搜 GitHub/skill 市场找现成能力(skill/MCP/插件),评估后给跨平台安装命令,找不到才自建——避免本地造低配轮子。当用户说「有没有现成的、先找找轮子、搜下 skill、这个需求别人做过吗、skill-scout」,或你即将从零写一个通用性工具/skill 之前,必须先触发本 skill。
 ---
 
@@ -31,11 +29,11 @@ npx -y skills find "<英文能力词>"
 curl -sS "https://www.skills.sh/api/search?q=<query>"
 ```
 
-**② MCP 能力** — 先用本机注册表工具 `search_mcp_registry`(mcp-registry MCP,关键词数组);再补 GitHub 清单 `punkpeye/awesome-mcp-servers`。
+**② MCP 能力** — 先用本机注册表工具 `search_mcp_registry`(mcp-registry MCP,关键词数组);再补 GitHub 清单 [punkpeye/awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers)。
 
-**③ GitHub 直搜 + awesome 清单** — 覆盖 skills.sh 之外的轮子(CLI/库/插件):`<能力词> claude skill`、`<能力词> mcp`,按 stars + 最近更新排;清单看 `ComposioHQ/awesome-claude-skills`、`travisvn/awesome-claude-skills`、`anthropics/skills`,以及垂类清单(如 slides 类 `ToseaAI/awesome-html-slide-skills`)。
+**③ GitHub 直搜 + awesome 清单** — 覆盖 skills.sh 之外的轮子(CLI/库/插件):`<能力词> claude skill`、`<能力词> mcp`,按 stars + 最近更新排;清单看 [ComposioHQ/awesome-claude-skills](https://github.com/ComposioHQ/awesome-claude-skills)、[travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills)、[anthropics/skills](https://github.com/anthropics/skills),以及垂类清单(如 slides 类 [ToseaAI/awesome-html-slide-skills](https://github.com/ToseaAI/awesome-html-slide-skills))。
 
-**④ 兜底** — `claudemarketplaces.com`(社区总索引,skills/marketplaces/MCP 三合一,⌘K 搜)、`mcpmarket.com`、`smithery.ai`;或通用 web 搜 `best <能力词> claude code skill 2026`。
+**④ 兜底** — [claudemarketplaces.com](https://claudemarketplaces.com/)(社区总索引,skills/marketplaces/MCP 三合一,⌘K 搜)、[mcpmarket.com](https://mcpmarket.com/)、[smithery.ai](https://smithery.ai/);或通用 web 搜 `best <能力词> claude code skill 2026`。
 
 ### 3. 评估(每个候选 30 秒)
 
@@ -54,6 +52,10 @@ curl -sS "https://www.skills.sh/api/search?q=<query>"
 候选多时把回源核验丢给背景 agent 并行跑,主线继续干活。
 
 ### 4. 给结论
+
+**一律给可点链接,不许只给名字。** 提到的每一个候选——不管最后采不采纳、是 skill 还是库还是被否掉的对照项——都必须挂上可点地址:
+GitHub 仓给 `https://github.com/<owner>/<repo>`,注册表里的 skill 给 `https://skills.sh/<owner>/<repo>/<skill>`,有官网的库优先给官网。
+对话里的表格、正文、留档三处同等适用。**光给名字 = 把回源的活又推回给负责人**,等于这一步白做。
 
 **找到了** — 给安装命令 + 一句差异说明。跨 agent 一条命令通吃(Claude Code 落 `.claude/skills/`,Codex 落 `.agents/skills/`,两处同步):
 
