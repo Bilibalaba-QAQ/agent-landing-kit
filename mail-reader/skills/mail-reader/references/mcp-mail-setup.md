@@ -12,10 +12,11 @@
 
 | 项目 | 适用 | 说明 |
 |---|---|---|
-| [ai-zerolab/mcp-email-server](https://github.com/ai-zerolab/mcp-email-server) | 任意 IMAP/SMTP 邮箱(推荐首选) | Python,PyPI 包 `mcp-email-server`,`uvx` 一行可跑;配置向导管理多账户 |
-| [GongRzhe/Gmail-MCP-Server](https://github.com/GongRzhe/Gmail-MCP-Server) | 仅 Gmail | 走 Gmail API + OAuth,免授权码,功能全(搜索/读信/附件/标签) |
+| [Wh1isper/mcp-email-server](https://github.com/Wh1isper/mcp-email-server) | 任意 IMAP/SMTP 邮箱(**推荐首选**) | Python,`uvx mcp-email-server@latest` 一行可跑;配置向导管理多账户。2026-07-27 回源:293 star · 最近推送 2026-07-25 · 未归档(原 `ai-zerolab/…` 已改名至此,旧链接 301 跳转) |
+| ~~[GongRzhe/Gmail-MCP-Server](https://github.com/GongRzhe/Gmail-MCP-Server)~~ | 仅 Gmail | ⚠ **已归档、停止维护**(2026-07-27 回源:archived=true · 最后推送 2025-08-06),不再推荐。Gmail 走上面那个 IMAP 方案即可(开「应用专用密码」当授权码)|
 
 > 装第三方 MCP 前照 skill-scout 的习惯过一眼:最近 commit 半年内、代码可审、无不明回传;凭据只进本机配置。
+> 上表状态为 **2026-07-27 回源实测**;第三方仓库会改名/归档,装之前请自己再回源看一眼 star 与最近推送。
 
 ## 三 · 注册到 Claude Code(示例)
 
@@ -23,12 +24,6 @@
 
 ```bash
 claude mcp add email -- uvx mcp-email-server@latest stdio
-```
-
-Gmail(Gmail-MCP-Server;先按其 README 完成一次本地 OAuth 授权):
-
-```bash
-claude mcp add gmail -- npx @gongrzhe/server-gmail-autoauth-mcp
 ```
 
 若所选 MCP 走环境变量传凭据,占位如下——**值留空,自己在本机 shell 或密钥管理器里填,不要写进任何仓库**:
