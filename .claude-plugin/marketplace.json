@@ -5,8 +5,8 @@
     "name": "agent-landing-kit"
   },
   "metadata": {
-    "description": "给 AI 新员工的入职装备:资讯 / 邮件 / 内网访问 / 找轮子 / 做 slides 五件套",
-    "version": "0.1.0"
+    "description": "给 AI 新员工的入职装备:资讯 / 邮件 / 内网访问 / 内网文档写入 / 找轮子 / 做 slides 六件套",
+    "version": "0.2.0"
   },
   "plugins": [
     {
@@ -23,6 +23,11 @@
       "name": "conf-access",
       "source": "./conf-access",
       "description": "内网站点 hosts 一键钉:标记块写入(备份/幂等/可还原),域名与 IP 本地配置、不入仓"
+    },
+    {
+      "name": "conf-writer",
+      "source": "./conf-writer",
+      "description": "Confluence 内容投递:把 markdown 写进指定页面的指定位置(替换/追加/插到某标题下/新建),默认 dry-run 预览;可零凭据走浏览器已登录会话"
     },
     {
       "name": "skill-scout",
