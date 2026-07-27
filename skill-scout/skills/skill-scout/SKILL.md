@@ -1,5 +1,7 @@
 ---
 name: skill-scout
+tier: public
+config: []
 description: 新需求出现时,先深搜 GitHub/skill 市场找现成能力(skill/MCP/插件),评估后给跨平台安装命令,找不到才自建——避免本地造低配轮子。当用户说「有没有现成的、先找找轮子、搜下 skill、这个需求别人做过吗、skill-scout」,或你即将从零写一个通用性工具/skill 之前,必须先触发本 skill。
 ---
 
@@ -59,7 +61,7 @@ curl -sS "https://www.skills.sh/api/search?q=<query>"
 npx -y skills add <owner>/<repo> -s <skill名> -a claude-code codex -y
 ```
 
-`-a` 后跟**空格分隔**的 agent 名(逗号连写会被判非法);`-g` 装全局、`--copy` 复制而非软链、`-l` 只列不装。第三方代码装前**提醒上位过一眼**(或派锦衣卫隔离审计)——skill 以 agent 全权限运行。
+`-a` 后跟**空格分隔**的 agent 名(逗号连写会被判非法);`-g` 装全局、`--copy` 复制而非软链、`-l` 只列不装。第三方代码装前**提醒负责人过一眼**(或派隔离审计 agent隔离审计)——skill 以 agent 全权限运行。
 
 **没找到** — 列出已搜过的路子(证明不是没找),再开始自建;建完按 `package-capabilities` 打包出仓,让下一个人不用再造。
 
