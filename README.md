@@ -46,9 +46,23 @@ npx -y skills add Bilibalaba-QAQ/agent-landing-kit -s skill-scout --full-depth -
 | `ai-briefing` | AI 资讯双技能:aihot 即时查询 + ai-daily 纯文本日报(公开只读 API,零凭据) | 无 |
 | `mail-reader` | 邮件只读检索:列账户/筛邮件/搜正文/读单封/存附件 | 路径一需 macOS + Foxmail 客户端;其他环境走路径二(IMAP 邮件 MCP,见插件内指南) |
 | `conf-access` | 内网站点(Confluence/Wiki)打不开?hosts 标记块一键钉到健康 IP,备份/幂等/可还原 | 域名与 IP 向你的网络管理员/团队群获取(不在本仓库) |
-| `conf-writer` | Confluence **读写**:按地址或关键词读回 markdown 风格正文(长页面分段);把 markdown 写进指定位置——整页替换 / 追加 / 插到某个标题小节下 / 新建页面,写入默认 dry-run 预览 | 能访问目标 Confluence;浏览器已登录该站点即可零凭据使用 |
+| `conf-writer` | Confluence **读写**:按地址或关键词读回 markdown 风格正文(长页面分段);把 markdown 写进指定位置——整页替换 / 追加 / 插到某个标题小节下 / 新建页面,写入默认 dry-run 预览 | 见下「conf-writer 生效前置条件」 |
 | `skill-scout` | 新需求先深搜(skills CLI + MCP 注册表 + GitHub 清单)找现成能力,给跨 agent 安装命令,找不到才自建 | 无 |
 | `slide-forge` | 赛博终端风 HTML 动效 slides:单文件零依赖离线放映,可内嵌 asciinema 终端实录 | 无 |
+
+## conf-writer 生效前置条件
+
+用之前先对齐这四项,缺一项就跑不起来或会写错地方:
+
+| 前置条件 | 说明 | 不满足会怎样 |
+|---|---|---|
+| **网络能到达目标 Confluence** | 内网站点通常要先接入内网;域名解析不通可配合 `conf-access` 插件 | 脚本报连接失败 |
+| **一条可用的传输腿** | 二选一:①浏览器已登录该 Confluence(**零凭据零配置**,推荐);②站点允许创建个人 PAT,跑 `setup --with-pat` 配好 | 401,无法认证 |
+| **锚定目标位置** | **改已有页面**:把页面地址整条粘给 `--url` 即可(三种链接形态都认:`/spaces/<空间>/pages/<页面ID>/…`、`/pages/viewpage.action?pageId=…`、`/display/<空间>/<标题>`);只记得标题就用 `--space` + `--title`,或先 `search --query` 把候选连页面 ID 找出来。**新建页面**:必须给空间 key(`--space`)与标题(`--title`),建议再给父页面(`--parent-title`) | 不知道往哪读/往哪写,拒绝执行 |
+| **对该页面有相应权限** | 读要查看权限,写要编辑权限 | 读 404/403,写 403 |
+
+写入前默认只出 dry-run 预览(会写到哪、改多少字符、版本从几到几),确认无误再加 `--apply` 落笔。
+读全程只发 GET,不会改动任何页面。
 
 ## 注意事项
 

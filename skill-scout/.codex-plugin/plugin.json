@@ -1,6 +1,6 @@
 {
   "name": "skill-scout",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "先找轮子再造轮子:新需求先多路深搜(skills CLI/MCP 注册表/GitHub 清单)找现成能力,评估后给跨 agent 安装命令,找不到才自建",
   "license": "MIT"
 }
