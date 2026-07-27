@@ -39,7 +39,7 @@ Claude Code 里也可以用 `/plugin` 交互式挑选。
 | `mail-reader` | 邮件只读检索:列账户/筛邮件/搜正文/读单封/存附件 | 路径一需 macOS + Foxmail 客户端;其他环境走路径二(IMAP 邮件 MCP,见插件内指南) |
 | `conf-access` | 内网站点(Confluence/Wiki)打不开?hosts 标记块一键钉到健康 IP,备份/幂等/可还原 | 域名与 IP 向你的网络管理员/团队群获取(不在本仓库) |
 | `conf-writer` | 把 markdown 写进指定 Confluence 页面的指定位置:整页替换 / 追加 / 插到某个标题小节下 / 新建页面,默认 dry-run 预览 | 能访问目标 Confluence;浏览器已登录该站点即可零凭据使用 |
-| `skill-scout` | 新需求先深搜 GitHub/skill 市场找现成能力,找不到才自建 | 无 |
+| `skill-scout` | 新需求先深搜(skills CLI + MCP 注册表 + GitHub 清单)找现成能力,给跨 agent 安装命令,找不到才自建 | 无 |
 | `slide-forge` | 赛博终端风 HTML 动效 slides:单文件零依赖离线放映,可内嵌 asciinema 终端实录 | 无 |
 
 ## 注意事项
