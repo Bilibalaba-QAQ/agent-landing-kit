@@ -31,6 +31,14 @@ claude plugin install conf-writer@agent-landing-kit
 
 Claude Code 里也可以用 `/plugin` 交互式挑选。
 
+**用别的 AI 工具?**(Cursor / Copilot / Gemini CLI / Windsurf 等几十种)走 skills 生态包管理器,只装 skill 本体:
+
+```bash
+npx -y skills add Bilibalaba-QAQ/agent-landing-kit -s skill-scout --full-depth -y
+```
+
+`-s` 换成你要的 skill 名(可多个,空格分隔);`-a` 可指定目标 agent(如 `-a codex cursor`),省略则装到当前检测到的 agent。这条路只搬 SKILL.md,插件里的脚本工具(conf-writer / mail-reader)仍建议走上面的市场安装。
+
 ## 六件一览
 
 | 插件 | 做什么 | 适用前提 |
