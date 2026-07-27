@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "给 AI 新员工的入职装备:资讯 / 邮件 / 内网访问 / 内网文档写入 / 找轮子 / 做 slides 六件套",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "plugins": [
     {
@@ -27,7 +27,7 @@
     {
       "name": "conf-writer",
       "source": "./conf-writer",
-      "description": "Confluence 内容投递:把 markdown 写进指定页面的指定位置(替换/追加/插到某标题下/新建),默认 dry-run 预览;可零凭据走浏览器已登录会话"
+      "description": "Confluence 读写:按地址/关键词读回 markdown 风格正文,或把 markdown 写进指定页面的指定位置;写入默认 dry-run 预览;可零凭据走浏览器已登录会话"
     },
     {
       "name": "skill-scout",

@@ -158,7 +158,7 @@ def request(cfg, method, path, payload=None, need_auth=True, base=None):
 # ---------- 页面操作 ----------
 
 def get_page(cfg, page_id):
-    return request(cfg, "GET", "/rest/api/content/%s?expand=body.storage,version,space,ancestors"
+    return request(cfg, "GET", "/rest/api/content/%s?expand=body.storage,body.view,version,space,ancestors"
                    % urllib.parse.quote(str(page_id)))
 
 
@@ -301,6 +301,21 @@ def cmd_setup(args, cfg):
                         else "未设(走浏览器会话腿即可,无需凭据)"))
 
 
+def cmd_browser_read(args, cfg):
+    """产出浏览器会话腿的「读 / 检索」JS(不联网、不需要凭据)。"""
+    from browser_transport import build_read_script
+    if args.op == "search":
+        cql = build_cql(args)
+        sys.stdout.write(build_read_script(op="search", cql=cql, limit=args.limit))
+    else:
+        if not (args.page_id or (args.space and args.title)):
+            die("读取须给 --url,或 --page-id,或 --space 加 --title。")
+        sys.stdout.write(build_read_script(
+            page_id=args.page_id, space=args.space, title=args.title,
+            fmt=args.format, offset=args.offset, max_chars=args.max_chars))
+    sys.stdout.write("\n")
+
+
 def cmd_browser_script(args, cfg):
     """产出浏览器会话腿要执行的 JS(不联网、不需要凭据)。"""
     from browser_transport import build_script
@@ -326,9 +341,48 @@ def cmd_get(args, cfg):
     print("空间:%s" % (page.get("space") or {}).get("key", "?"))
     print("版本:%s" % (page.get("version") or {}).get("number", "?"))
     print("链接:%s" % page_url(cfg, page, args.base_url))
-    if args.raw:
+    body = page.get("body") or {}
+    fmt = "storage" if args.raw else args.format
+    if fmt == "storage":
         print("--- storage ---")
-        print(((page.get("body") or {}).get("storage") or {}).get("value", ""))
+        print((body.get("storage") or {}).get("value", ""))
+    elif fmt == "view":
+        print("--- view html ---")
+        print((body.get("view") or {}).get("value", ""))
+    elif fmt == "text":
+        from view2text import view_to_text
+        print("--- 正文 ---")
+        print(view_to_text((body.get("view") or {}).get("value", "")))
+
+
+def build_cql(args):
+    """把 --query / --space / --cql 合成一条 CQL。"""
+    if args.cql:
+        return args.cql
+    parts = ["type=page"]
+    if args.space:
+        parts.append('space="%s"' % args.space.replace('"', ""))
+    if args.query:
+        q = args.query.replace('"', "")
+        parts.append('(title~"%s" or text~"%s")' % (q, q))
+    if len(parts) == 1:
+        die("检索须给 --query,或 --space,或直接给 --cql。")
+    return " and ".join(parts)
+
+
+def cmd_search(args, cfg):
+    cql = build_cql(args)
+    q = urllib.parse.urlencode({"cql": cql, "limit": args.limit})
+    res = request(cfg, "GET", "/rest/api/content/search?" + q + "&expand=space,version")
+    results = res.get("results") or []
+    print("条件:%s" % cql)
+    print("命中:%s 条(显示 %d)\n" % (res.get("size", len(results)), len(results)))
+    for p in results:
+        print("[%s] %s  (空间 %s,v%s)"
+              % (p.get("id"), p.get("title"),
+                 (p.get("space") or {}).get("key", "?"),
+                 (p.get("version") or {}).get("number", "?")))
+        print("     %s" % page_url(cfg, p, args.base_url))
 
 
 def resolve_page(cfg, args, required=False):
@@ -432,10 +486,19 @@ def main():
     add_content(p)
     p.set_defaults(fn=cmd_render)
 
-    p = sub.add_parser("get", help="读取页面信息")
+    p = sub.add_parser("get", help="读取页面(默认输出 markdown 风格正文)")
     add_target(p)
-    p.add_argument("--raw", action="store_true", help="打印 storage 原文")
+    p.add_argument("--format", default="text", choices=["text", "storage", "view"],
+                   help="text=markdown 风格正文(默认) storage=原始存储格式 view=渲染 HTML")
+    p.add_argument("--raw", action="store_true", help="等价 --format storage(旧写法)")
     p.set_defaults(fn=cmd_get)
+
+    p = sub.add_parser("search", help="按标题/正文/空间检索页面")
+    p.add_argument("--query", help="关键词(同时匹配标题与正文)")
+    p.add_argument("--space", help="限定空间 key")
+    p.add_argument("--cql", help="直接给 CQL(给了就忽略上面两项)")
+    p.add_argument("--limit", type=int, default=10, help="返回条数,默认 10")
+    p.set_defaults(fn=cmd_search)
 
     p = sub.add_parser("write", help="写入页面(默认 dry-run,--apply 才落笔)")
     add_target(p)
@@ -464,6 +527,20 @@ def main():
     p.add_argument("--apply", action="store_true",
                    help="生成真正写入的脚本(不加则生成 dry-run 脚本)")
     p.set_defaults(fn=cmd_browser_script)
+
+    p = sub.add_parser("browser-read",
+                       help="产出浏览器会话腿的读/检索 JS(无 PAT 时用;只读,永不改动页面)")
+    add_target(p)
+    p.add_argument("--op", default="read", choices=["read", "search"],
+                   help="read=读页面(默认) search=按关键词/空间检索")
+    p.add_argument("--format", default="text", choices=["text", "storage", "view"],
+                   help="text=markdown 风格正文(默认) storage=原始存储格式 view=渲染 HTML")
+    p.add_argument("--offset", type=int, default=0, help="长页面分段续读的起点")
+    p.add_argument("--max-chars", type=int, default=8000, help="单次返回上限,默认 8000")
+    p.add_argument("--query", help="search:关键词(同时匹配标题与正文)")
+    p.add_argument("--cql", help="search:直接给 CQL")
+    p.add_argument("--limit", type=int, default=10, help="search:返回条数,默认 10")
+    p.set_defaults(fn=cmd_browser_read)
 
     args = ap.parse_args()
     apply_url_target(args)

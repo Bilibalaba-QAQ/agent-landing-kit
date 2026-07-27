@@ -97,6 +97,96 @@ JSON.stringify(out, null, 1)
 """
 
 
+_JS_READ = r"""
+const R = %s;
+const GET = async u => { const r = await fetch(u,{credentials:'same-origin',headers:{Accept:'application/json'}});
+  if(!r.ok) throw new Error('GET '+r.status+' '+u); return r.json(); };
+
+// 渲染后 HTML → markdown 风格文本(与 view2text.py 的 view_to_text 对应,改一处须同步)
+function ser(node, ctx){
+  let s = '';
+  node.childNodes.forEach(c => {
+    if(c.nodeType === 3){ s += c.textContent.replace(/[\t\r\n]+/g,' '); return; }
+    if(c.nodeType !== 1) return;
+    const g = c.tagName.toLowerCase();
+    if(g === 'script' || g === 'style') return;
+    if(/^h[1-6]$/.test(g))      s += '\n\n' + '#'.repeat(+g[1]) + ' ' + c.textContent.trim();
+    else if(g === 'p')          s += '\n\n' + ser(c).trim();
+    else if(g === 'br')         s += '\n';
+    else if(g === 'hr')         s += '\n\n---\n';
+    else if(g === 'ul' || g === 'ol') s += (ctx ? '' : '\n') + ser(c, {list:g, depth:(ctx?ctx.depth+1:0)});
+    else if(g === 'li')         s += '\n' + '\x01'.repeat(ctx?ctx.depth:0)
+                                     + (ctx && ctx.list === 'ol' ? '1. ' : '- ') + ser(c, ctx).trim();
+    else if(g === 'table'){
+      const rows = [...c.querySelectorAll('tr')].map(r =>
+        [...r.children].map(x => ser(x).trim().replace(/\|/g,'\\|')));
+      if(rows.length){
+        s += '\n\n| ' + rows[0].join(' | ') + ' |\n|' + rows[0].map(()=>'---').join('|') + '|';
+        rows.slice(1).forEach(r => s += '\n| ' + r.join(' | ') + ' |');
+        s += '\n';
+      }
+    }
+    else if(g === 'pre')        s += '\n\n```\n' + c.textContent.replace(/\s+$/,'') + '\n```\n';
+    else if(g === 'strong' || g === 'b') s += '**' + ser(c,ctx).trim() + '**';
+    else if(g === 'em' || g === 'i')     s += '*' + ser(c,ctx).trim() + '*';
+    else if(g === 'code')       s += '`' + c.textContent + '`';
+    else if(g === 'img'){ const al = (c.getAttribute('alt')||'').trim();
+                          if(al) s += '![' + al + ']'; }   // 无 alt 多是附件图标/表情,丢掉
+    else if(g === 'a'){ const h = c.getAttribute('href'); const t = ser(c,ctx).trim();
+                        s += h ? ('['+t+']('+h+')') : t; }
+    else s += ser(c, ctx);
+  });
+  return s;
+}
+// 列表缩进先用 \x01 占位,免得被空白归一化吃掉,收尾还原成空格
+const toText = html => { const d = document.createElement('div'); d.innerHTML = html;
+  return ser(d).replace(/[ \t]+/g,' ').replace(/[ \t]*\n[ \t]*/g,'\n')
+               .replace(/\n{3,}/g,'\n\n')
+               .replace(/\[(!\[[^\]]*\])\]\([^)]*\)/g,'$1')
+               .trim().replace(/\x01/g,'  '); };
+
+let out;
+if(R.op === 'search'){
+  const q = new URLSearchParams({cql: R.cql, limit: String(R.limit||10)});
+  const res = await GET('/rest/api/content/search?' + q + '&expand=space,version');
+  out = {动作:'检索', 条件:R.cql, 命中:(res.size!=null?res.size:(res.results||[]).length),
+         结果:(res.results||[]).map(p => ({页面ID:p.id, 标题:p.title,
+                空间:(p.space||{}).key, 版本:(p.version||{}).number}))};
+}else{
+  const EXP = '?expand=body.view,body.storage,version,space,ancestors';
+  let page = null;
+  if(R.pageId){ page = await GET('/rest/api/content/'+encodeURIComponent(R.pageId)+EXP); }
+  else if(R.space && R.title){
+    const q = await GET('/rest/api/content?type=page&spaceKey='+encodeURIComponent(R.space)
+                        +'&title='+encodeURIComponent(R.title)+'&expand=body.view,body.storage,version,space');
+    page = (q.results || [])[0] || null;
+  }
+  if(!page) throw new Error('没找到目标页面。检查页面地址/空间+标题是否正确,以及你有没有查看权限。');
+  const body = R.format === 'storage' ? ((page.body||{}).storage||{}).value
+             : R.format === 'view'    ? ((page.body||{}).view||{}).value
+             : toText(((page.body||{}).view||{}).value || '');
+  const full = body || '';
+  const start = R.offset || 0;
+  const max = R.maxChars || 8000;
+  const slice = full.slice(start, start + max);
+  out = {动作:'读取', 标题:page.title, 页面ID:page.id, 空间:(page.space||{}).key,
+         版本:'v'+((page.version||{}).number), 格式:R.format,
+         总字符数:full.length, 本次区间:start+'-'+Math.min(start+max, full.length),
+         还有后续:(start+max < full.length) ? ('是,下次带 --offset '+(start+max)) : '否',
+         正文:slice};
+}
+JSON.stringify(out, null, 1)
+"""
+
+
+def build_read_script(page_id=None, space=None, title=None, fmt="text",
+                      offset=0, max_chars=8000, cql=None, limit=10, op="read"):
+    payload = {"op": op, "pageId": page_id, "space": space, "title": title,
+               "format": fmt, "offset": offset, "maxChars": max_chars,
+               "cql": cql, "limit": limit}
+    return _JS_READ % json.dumps(payload, ensure_ascii=False)
+
+
 def build_script(addition, page_id=None, space=None, title=None, mode="replace",
                  heading=None, parent_id=None, parent_title=None,
                  message=None, apply=False):
